@@ -237,8 +237,8 @@ class ToolUsage:
 
     def _format_result(self, result: Any) -> None:
         self.task.used_tools += 1
-        if self._should_remember_format():  # type: ignore # "_should_remember_format" of "ToolUsage" does not return a value (it only ever returns None)
-            result = self._remember_format(result=result)  # type: ignore # "_remember_format" of "ToolUsage" does not return a value (it only ever returns None)
+        # if self._should_remember_format():  # type: ignore # "_should_remember_format" of "ToolUsage" does not return a value (it only ever returns None)
+            # result = self._remember_format(result=result)  # type: ignore # "_remember_format" of "ToolUsage" does not return a value (it only ever returns None)
         return result
 
     def _should_remember_format(self) -> None:
