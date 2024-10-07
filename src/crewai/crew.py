@@ -53,6 +53,8 @@ if os.environ.get("AGENTOPS_API_KEY"):
         import agentops  # type: ignore
     except ImportError:
         pass
+# Sina
+from modules.tool_memory import ToolMemory, RecallTool
 
 if TYPE_CHECKING:
     from crewai.pipeline.pipeline import Pipeline
@@ -101,6 +103,9 @@ class Crew(BaseModel):
     _task_output_handler: TaskOutputStorageHandler = PrivateAttr(
         default_factory=TaskOutputStorageHandler
     )
+    
+    #Sina
+    tool_memory: InstanceOf[ToolMemory]
 
     name: Optional[str] = Field(default=None)
     cache: bool = Field(default=True)
@@ -172,6 +177,8 @@ class Crew(BaseModel):
         default=[],
         description="List of execution logs for tasks",
     )
+    
+    
 
     @field_validator("id", mode="before")
     @classmethod
@@ -594,6 +601,8 @@ class Crew(BaseModel):
                 tools=AgentTools(agents=self.agents).tools(),
                 llm=self.manager_llm,
                 verbose=self.verbose,
+                # Sina
+                tool_memory=self.tool_memory
             )
             self.manager_agent = manager
 

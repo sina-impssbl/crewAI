@@ -24,7 +24,8 @@ from crewai.utilities.exceptions.context_window_exceeding_exception import (
 )
 from crewai.utilities.logger import Logger
 from crewai.utilities.training_handler import CrewTrainingHandler
-
+# Sina
+from modules.tool_memory import ToolMemory
 
 class CrewAgentExecutor(AgentExecutor, CrewAgentExecutorMixin):
     _i18n: I18N = I18N()
@@ -47,6 +48,9 @@ class CrewAgentExecutor(AgentExecutor, CrewAgentExecutorMixin):
     system_template: Optional[str] = None
     prompt_template: Optional[str] = None
     response_template: Optional[str] = None
+    #Sina
+    tool_memory: InstanceOf[ToolMemory]
+    
     _logger: Logger = Logger()
     _fit_context_window_strategy: Optional[Literal["summarize"]] = "summarize"
 
@@ -273,6 +277,19 @@ class CrewAgentExecutor(AgentExecutor, CrewAgentExecutorMixin):
                     name.casefold().strip() for name in name_to_tool_map
                 ]:
                     observation = tool_usage.use(tool_calling, agent_action.log)
+                    # Sina
+                    if ( tool_calling.tool_name not in ["Ask question to coworker",
+                                                        "Delegate work to coworker",
+                                                        "Fetch the output of previous tool usages"]
+                        and
+                        observation.strip().casefold()!="i tried reusing the same input, i must stop using this action input. i'll try something else instead."
+                        ):
+                        self.tool_memory.add_record(
+                                tool_name=tool_calling.tool_name, 
+                                    tool_description=[tool.description for tool in self.tools if tool.name.strip().casefold() ==  tool_calling.tool_name.strip().casefold()][0], 
+                                    tool_input=tool_calling.arguments, 
+                                    tool_output=observation
+                                                        )
                 else:
                     observation = self._i18n.errors("wrong_tool_name").format(
                         tool=tool_calling.tool_name,

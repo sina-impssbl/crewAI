@@ -16,10 +16,12 @@ class AgentTools(BaseAgentTools):
                     coworkers=coworkers
                 ),
             ),
-            StructuredTool.from_function(
-                func=self.ask_question,
-                name="Ask question to coworker",
-                description=self.i18n.tools("ask_question").format(coworkers=coworkers),
-            ),
+            # Sina
+            # Deactivate "Ask question to coworker" tool
+            # StructuredTool.from_function(
+            #     func=self.ask_question,
+            #     name="Ask question to coworker",
+            #     description=self.i18n.tools("ask_question").format(coworkers=coworkers),
+            # ),
         ]
         return tools

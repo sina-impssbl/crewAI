@@ -119,23 +119,25 @@ class ToolUsage:
         calling: Union[ToolCalling, InstructorToolCalling],
     ) -> str:  # TODO: Fix this return type
         tool_event = agentops.ToolEvent(name=calling.tool_name) if agentops else None  # type: ignore
-        if self._check_tool_repeated_usage(calling=calling):  # type: ignore # _check_tool_repeated_usage of "ToolUsage" does not return a value (it only ever returns None)
-            try:
-                result = self._i18n.errors("task_repeated_usage").format(
-                    tool_names=self.tools_names
-                )
-                if self.agent.verbose:
-                    self._printer.print(content=f"\n\n{result}\n", color="purple")
-                self._telemetry.tool_repeated_usage(
-                    llm=self.function_calling_llm,
-                    tool_name=tool.name,
-                    attempts=self._run_attempts,
-                )
-                result = self._format_result(result=result)  # type: ignore #  "_format_result" of "ToolUsage" does not return a value (it only ever returns None)
-                return result  # type: ignore # Fix the return type of this function
+        # Sina
+        # Deactivate task_repeated_usage
+        # if self._check_tool_repeated_usage(calling=calling):  # type: ignore # _check_tool_repeated_usage of "ToolUsage" does not return a value (it only ever returns None)
+        #     try:
+        #         result = self._i18n.errors("task_repeated_usage").format(
+        #             tool_names=self.tools_names
+        #         )
+        #         if self.agent.verbose:
+        #             self._printer.print(content=f"\n\n{result}\n", color="purple")
+        #         self._telemetry.tool_repeated_usage(
+        #             llm=self.function_calling_llm,
+        #             tool_name=tool.name,
+        #             attempts=self._run_attempts,
+        #         )
+        #         result = self._format_result(result=result)  # type: ignore #  "_format_result" of "ToolUsage" does not return a value (it only ever returns None)
+        #         return result  # type: ignore # Fix the return type of this function
 
-            except Exception:
-                self.task.increment_tools_errors()
+        #     except Exception:
+        #         self.task.increment_tools_errors()
 
         result = None  # type: ignore # Incompatible types in assignment (expression has type "None", variable has type "str")
 

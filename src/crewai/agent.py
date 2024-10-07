@@ -18,7 +18,7 @@ from crewai.utilities import Converter, Prompts
 from crewai.utilities.constants import TRAINED_AGENTS_DATA_FILE, TRAINING_DATA_FILE
 from crewai.utilities.token_counter_callback import TokenCalcHandler
 from crewai.utilities.training_handler import CrewTrainingHandler
-
+from modules.tool_memory import ToolMemory, RecallTool
 
 def mock_agent_ops_provider():
     def track_agent(*args, **kwargs):
@@ -112,6 +112,8 @@ class Agent(BaseAgent):
         default=2,
         description="Maximum number of retries for an agent to execute a task when an error occurs.",
     )
+    #Sina
+    tool_memory: InstanceOf[ToolMemory]
 
     @model_validator(mode="after")
     def post_init_setup(self):
@@ -277,6 +279,8 @@ class Agent(BaseAgent):
             "function_calling_llm": self.function_calling_llm,
             "callbacks": self.callbacks,
             "max_tokens": self.max_tokens,
+            # Sina
+            "tool_memory":self.tool_memory
         }
 
         if self._rpm_controller:
